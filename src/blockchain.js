@@ -66,17 +66,20 @@ class Blockchain {
         return new Promise(async (resolve, reject) => {
                             
             // Reference to the previous Block Hash
-             
-            var tmpPrevBlock = (this.height === -1) ? null : this.chain[this.height]; 
-            if(tmpPrevBlock != null){
-                block.previousBlockHash = tmpPrevBlock.hash;
+            try{ 
+                var tmpPrevBlock = (this.height === -1) ? null : this.chain[this.height]; 
+                if(tmpPrevBlock){
+                    block.previousBlockHash = tmpPrevBlock.hash;
+                }
+                
+                block.time = new Date().toString().slice(0,-3);
+                block.height = self.height = self.chain.push(block)-1;
+                block.hash = SHA256(JSON.stringify(block)).toString();
+                
+                resolve(block);
+            }catch(error){
+                reject("Bad block");
             }
-            
-            block.time = new Date().toString().slice(0,-3);
-            block.height = self.height = self.chain.push(block)-1;
-            block.hash = SHA256(JSON.stringify(block)).toString();
-            
-            resolve(block);
         });
     }
 
@@ -181,7 +184,7 @@ class Blockchain {
                         stars.push(data);
                     }
                 }
-        });
+            });
             if(stars){
                 resolve(stars);
             }else{
