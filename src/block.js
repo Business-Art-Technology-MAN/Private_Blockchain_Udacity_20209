@@ -45,10 +45,13 @@ class Block {
             // Returning the Block is valid
             // Returning the Block is not valid
             // Returning the Block is valid
-            const oldHash = self.hash;
+
+            //udated code from code review 2020/09/18
+            let currentHash = self.hash;
             self.hash = null;
-            let reHashed = SHA256(JSON.stringify(self)).toString();
-            if(oldHash === reHashed){
+            let newHash = SHA256(JSON.stringify(self)).toString();
+            self.hash = currentHash;
+            if(currentHash === newHash){
                 resolve(true);
             } else {
                 reject(false);

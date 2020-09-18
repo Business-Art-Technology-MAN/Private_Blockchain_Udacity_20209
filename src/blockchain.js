@@ -205,24 +205,21 @@ class Blockchain {
     validateChain() {
         let self = this;
         let errorLog = [];
-        //slice and offest arrays to compare
-        //https://masteringjs.io/tutorials/fundamentals/compare-arrays
-        function arrayEquals(a, b) {
-            return Array.isArray(a) &&
-              Array.isArray(b) &&
-              a.length === b.length &&
-              a.every((val, index) => val === b[index]);
-          }
+        //code from code review 20200918
         return new Promise(async (resolve, reject) => {
-            let hashArray = self.chain.map(h => h.hash).slice(1,self.chain.length);
-            let prevHashArray = self.chain.map(ph => ph.hash).slice(0,self.chain.length-1);
-            let errorLog = self.chain.map(b => b.validate());
-
-            if(arrayEquals(prevHashArray, hashArray) && (Array.isArray(errorLog) && errorLog.length)){
-                resolve(true);
-            }else{
-                reject(errorLog);
-            }
+            
+            self.chain.map(async (block) => { //async needed to make code run.
+                
+                if(await block.validate())  {
+                    errorLog.push(block);
+                }
+               if(block.height > 0) {
+                    if(block.previousBlockHash !== self.chain[block.height - 1].hash) {
+                        errorLog.push(block);
+                    }
+                }
+            });
+                resolve(errorLog);
         });
     }
 
