@@ -93,8 +93,10 @@ class Blockchain {
      */
     requestMessageOwnershipVerification(address) {
         return new Promise((resolve) => {
+            //code from 
+            //https://github.com/DiegoNavarroNavas/PrivateBlockchain/blob/master/src/blockchain.js
             let outString = `${address}:${new Date().getTime().toString().slice(0,-3)}:starRegistry`;
-            console.log(outString);
+            
             resolve(outString);
         }); 
     }
@@ -176,6 +178,7 @@ class Blockchain {
     getStarsByWalletAddress (address) {
         let self = this;
         let stars = [];
+        //based on https://knowledge.udacity.com/questions/228748
         return new Promise((resolve, reject) => {
             self.chain.forEach(mblock  => {
                 let data = mblock.getBData();
@@ -202,6 +205,8 @@ class Blockchain {
     validateChain() {
         let self = this;
         let errorLog = [];
+        //slice and offest arrays to compare
+        //https://masteringjs.io/tutorials/fundamentals/compare-arrays
         function arrayEquals(a, b) {
             return Array.isArray(a) &&
               Array.isArray(b) &&
